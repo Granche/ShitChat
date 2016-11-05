@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Simple API</title>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+	<style> 
+	
+	#logopic {
+		height: 95px;
+		width: 81px;
+		position: absolute;
+		top: 5px;
+		right: 5px;
+
+	}
+	.button {
+		float: right;
+		max-width: 18%;
+		height: 45%;
+		margin: auto 2px auto 2px;
+
+	}
+	#input {
+		float: left;
+		width: 80%;
+		height: 90%;
+	}
+	#buttoncontainer {
+		position: fixed;
+		left: 10px;
+		bottom:10px;
+		width: 98%;
+		outline: 1px solid green;
+		height: 5%;
+	}
+	#msgframe {
+		outline: 1px solid blue;
+	}
+	.msgholder {
+		outline: 1px red solid;
+	}
+
+	</style>
+
+</head>
+<body>
+	
+	<script type="text/x-handlebars-template" id="template"> 
+
+		<img src="{{logopic}}" id="logopic"> 
+		
+		{{{header }}} {{{underheader}}} 
+		
+		<div id="msgframe">
+			{{#each msgs}}
+				<div class="msgholder"> {{message}}</div> 
+			{{/each}}	
+		</div>	
+	</script>
+	
+
+	<form action="api/shitchat" method="post">
+
+		<div id="buttoncontainer">
+
+			<input name="message" id="input">
+			
+			<button type="submit" id="deletebutton" class="button" onclick="deleteMessage()">Radera Meddelande</button>
+
+			<button type="submit" class="button" > SEND && || GET </button>
+			
+			<button type="submit" class="button" onclick="changeMessage()" class="button" > CHANGE POST </button>
+		</div>
+	</form>
+
+
+
+
+<script>	
+
+		$.ajax({
+	  		url: "api/shitchat"
+		}).done(function (data){
+
+			var src = document.getElementById("template").innerHTML;
+			var render = Handlebars.compile(src); 
+			var html = render(data.data);
+			document.body.innerHTML += html;
+		});
+
+	
+	
+function deleteMessage() {
+	var id = prompt("vilket id vill du radera?")			
+
+	$.ajax({
+	  	url: "api/shitchat/" +id,
+	  	type: "DELETE",
+	}).done(function (data){
+			
+	})
+}
+
+
+function changeMessage() {
+
+	var id = prompt("vilket id vill du ändra?")	
+	var message = prompt("Ditt nya Meddelande: ")		
+
+	$.ajax({
+	  	url: "api/shitchat/" +id,
+	  	method: "PUT",
+	  	data: {message: message}
+	}).done(function (data){
+			
+	})
+
+}
+
+</script>
+</body>
+</html>
